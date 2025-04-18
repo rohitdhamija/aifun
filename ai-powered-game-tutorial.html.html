@@ -1,0 +1,243 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build & Deploy an AI-Powered Web Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section {
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+        .section h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .prompt-box {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .tip-box {
+            background-color: #e0f2fe;
+            padding: 1rem;
+            border-left: 4px solid #3b82f6;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            padding: 1rem;
+            border-left: 4px solid #ef4444;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .step {
+            margin-bottom: 1.5rem;
+        }
+        .step-number {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900">🎮 Build & Deploy an AI-Powered Web Game in Under 30 Minutes (No-Code!)</h1>
+        </header>
+
+        <div class="section">
+            <h2>🎯 Objective</h2>
+            <p>Create and deploy your own web-based game effortlessly using <strong>Grok (LLM)</strong> and <strong>GitHub Pages</strong>, without writing a single line of code or using the command line.</p>
+        </div>
+
+        <div class="section">
+            <h2>✅ Pre-requisites</h2>
+            <div class="warning-box">
+                <p>⚠️ Use your <strong>personal account</strong> for Grok and GitHub, not your corporate account.</p>
+            </div>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><strong>Grok Account</strong><br>Create a Grok account or use your existing personal one.</li>
+                <li><strong>GitHub Account</strong><br>Create a personal GitHub account at <a href="https://github.com" class="text-blue-600 hover:underline">github.com</a> if you don’t already have one. Once signed in, click <strong>Create repository</strong> → Name it something like <code>gamekhelo</code> → Click <strong>Create repository</strong>.</li>
+                <li><strong>Music File</strong><br>Download the provided <code>background.mp3</code> file if your game includes sound.</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>⚡️ Step-by-Step Guide</h2>
+
+            <div class="step">
+                <h3><span class="step-number">1</span> Choose Your Game</h3>
+                <p>Pick any one of the following:</p>
+
+                <div class="ml-4">
+                    <h4>🐍 GAME 1: Snake Game</h4>
+                    <div class="prompt-box">
+                        <p><strong>Prompt 1:</strong><br>Create a simple Snake game using HTML, CSS, and JavaScript in a single file. The game should:<br>- Display a grid-based play area.<br>- Control the snake with arrow keys.<br>- Place food randomly on the grid.<br>- Grow the snake when it eats food.<br>- End the game if the snake hits the wall or itself.</p>
+                    </div>
+                    <div class="prompt-box">
+                        <p><strong>Prompt 2 (Enhancement):</strong><br>Modify the snake game to add a looping soundtrack playing in the background using an audio file named "background.mp3".</p>
+                    </div>
+
+                    <h4>🎲 GAME 2: Tic Tac Toe</h4>
+                    <div class="prompt-box">
+                        <p><strong>Prompt 1:</strong><br>Create a basic Tic Tac Toe game using HTML, CSS, and JavaScript in a single file. It should:<br>- Have a 3x3 grid.<br>- Allow two players to take turns (X and O).<br>- Show whose turn it is.<br>- Detect and display the winner or a draw.</p>
+                    </div>
+                    <div class="prompt-box">
+                        <p><strong>Prompt 2 (Enhancement):</strong><br>Modify the Tic Tac Toe game to add a celebration effect when someone wins.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span> Generate Code Using Grok</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Copy Prompt 1 of your chosen game.</li>
+                    <li>Go to Grok, paste the prompt, and generate the game code.</li>
+                    <li>Copy the HTML/JavaScript code output.</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">3</span> Save & Test the Game</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Paste the code in <strong>Notepad</strong> (Windows) or <strong>TextEdit</strong> (Mac).</li>
+                    <li>Save as <code>game.html</code>.</li>
+                    <li>Open it in a browser to test.</li>
+                </ol>
+                <div class="tip-box">
+                    <p>💡 If the game doesn’t work, just prompt Grok with:<br><em>“There’s an issue with this game code — please fix it.”</em></p>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">4</span> Enhance the Game</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Return to Grok and add Prompt 2 with your original game code.</li>
+                    <li>Copy the updated version.</li>
+                    <li>Replace the old code in <code>game.html</code> and re-test.</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">5</span> Deploy on GitHub Pages (No-Code)</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Log into your GitHub account.</li>
+                    <li>Go to your repository (<code>gamekhelo</code>) → Click <strong>Upload files</strong>.</li>
+                    <li>Drag and drop:<br>- <code>game.html</code><br>- <code>background.mp3</code> (if applicable)</li>
+                    <li>Click <strong>Commit changes</strong>.</li>
+                    <li>Go to <strong>Settings</strong> → <strong>Pages</strong> → Choose <strong>main</strong> branch → Click <strong>Save</strong>.</li>
+                </ol>
+                <p class="mt-2">✅ Done! Your game is now live on the internet 🎉</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🌐 Example Game URLs</h2>
+            <p>Your game will be accessible at:</p>
+            <div class="prompt-box">
+                <p>https://{userid}.github.io/{reponame}/game.html</p>
+            </div>
+            <p>For example:</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>User ID: <code>rohitdhamijams</code></li>
+                <li>Repo Name: <code>gamekhelo</code></li>
+                <li>File Name: <code>game-snake.html</code></li>
+            </ul>
+            <p>➡️ <a href="https://rohitdhamijams.github.io/gamekhelo/game-snake.html" class="text-blue-600 hover:underline">https://rohitdhamijams.github.io/gamekhelo/game-snake.html</a><br>
+            ➡️ <a href="https://rohitdhamijams.github.io/gamekhelo/game-tictactoe.html" class="text-blue-600 hover:underline">https://rohitdhamijams.github.io/gamekhelo/game-tictactoe.html</a></p>
+        </div>
+
+        <div class="section">
+            <h2>🔑 Tips for Success</h2>
+            <ul class="list-disc list-inside space-y-2">
+                <li><strong>Be Specific in Prompts</strong><br>
+                    ❌ "Make a game."<br>
+                    ✅ "Create a basic Tic Tac Toe game with a 3x3 grid that detects a winner."
+                </li>
+                <li><strong>Iterate</strong><br>Don’t settle for the first output—refine your prompt for better results.</li>
+                <li><strong>Maintain Context</strong><br>Copy-paste earlier code when requesting enhancements.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🎉 Share Your Game!</h2>
+            <p>Once your game is deployed, share the link with the team so we can try it out. You've successfully built and deployed your own game — no code, just creative prompts!</p>
+            <p class="mt-4 text-lg font-bold">Happy Gaming! 🚀</p>
+        </div>
+    </div>
+</body>
+</html>
