@@ -18,7 +18,7 @@ Create and deploy your own web-based game effortlessly using **Grok (LLM)** and 
    - Once signed in, click **Create repository** → Name it something like `gamekhelo` → Click **Create repository**.
 
 3. **Music File**  
-   - Download the provided `background.mp3` file if your game includes sound (check email for attachment).
+   - Download the provided `background.mp3` file if your game includes sound
 
 ---
 
